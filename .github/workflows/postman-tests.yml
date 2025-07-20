@@ -1,0 +1,25 @@
+name: Postman API Tests
+
+on: [push]
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Run Postman Collection
+        run: |
+          newman run postman/collections/crud_tests.postman_collection.json \
+            -e postman/environments/local_env.postman_environment.json \
+            --iteration-data postman/data/users.csv \
+            --reporters cli,html \
+            --reporter-html-export newman/reports/report.html
